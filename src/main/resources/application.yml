@@ -1,0 +1,43 @@
+spring:
+  jackson:
+    serialization:
+      indent_output: true
+  cloud:
+    config:
+      server:
+        git:
+          uri:
+          searchPaths: '{application}'
+          timeout: 15
+  metrics:
+    servo:
+      enabled: false
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8001/eureka/
+server:
+  port: 8000
+monitoring:
+  path: /prometheus
+  interval: 10000
+  matchers:
+    - name: api.config
+      method: GET
+      matcher: /*/*
+    - name: metrics
+      method: GET
+      matcher: /metrics
+    - name: prometheus
+      method: GET
+      matcher: /prometheus
+management:
+  security:
+    enabled: false
+---
+spring:
+  profiles: container
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${DISCOVERY_HOST}:${DISCOVERY_PORT:8001}/eureka/
